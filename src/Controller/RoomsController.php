@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\I18n\Time;
 
 /**
  * Rooms Controller
@@ -35,11 +36,18 @@ class RoomsController extends AppController
      */
     public function view($id = null)
     {
-        
         $room = $this->Rooms->get($id, [
             'contain' => ['Showtimes' => function($sq){
-            return $sq ->where(['id'=>1]); //modifier le where pour afficher en semaine
-            //'showtimes.start>='
+            return $sq 
+            ->where(['start >=' => new \DateTime('monday this week'),
+            'start <=' => new \DateTime('sunday this week')]);
+           
+           
+           
+           
+            //'showtimes.start>=' => Time::now()->startOfWeek();
+            //'id'=>1
+            //'showtimes.start<=' -> Time::now()->endOfWeek();
             }]
         ]);
     
