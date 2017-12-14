@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\I18n\Time;
+use Cake\Collection\Collection;
 
 /**
  * Rooms Controller
@@ -38,19 +39,21 @@ class RoomsController extends AppController
     {
         $room = $this->Rooms->get($id, [
             'contain' => ['Showtimes' => function($sq){
-            return $sq 
-            ->where(['start >=' => new \DateTime('monday this week'),
-            'start <=' => new \DateTime('sunday this week')]);
-           
-           
-           
-           
-            //'showtimes.start>=' => Time::now()->startOfWeek();
-            //'id'=>1
-            //'showtimes.start<=' -> Time::now()->endOfWeek();
+                return $sq ->where([
+                    'start >=' => new \DateTime('monday this week'),
+                    'start <=' => new \DateTime('sunday this week')
+                ]);
             }]
         ]);
-    
+               
+               $collection = new Collection($room->showtimes);
+                
+                $showtimesThisWeek = $collection->groupBy(function($showtimes){
+                    return $showtimes->start->format('N');
+            }
+        );
+        
+        $this->set('showtimesthisweek', $showtimesThisWeek);
         $this->set('room', $room);
         $this->set('_serialize', ['room']);
         
