@@ -41,8 +41,7 @@ class RoomsController extends AppController
             'contain' => ['Showtimes' => function($sq){
                 return $sq ->where([
                     'start >=' => new \DateTime('monday this week'),
-                    'start <=' => new \DateTime('sunday this week')
-                ]);
+                    'start <=' => new \DateTime('sunday this week')           ]) ->contain(['Movies']);
             }]
         ]);
                
